@@ -10,7 +10,7 @@ app = FastAPI()
 # Allow React frontend to connect (adjust origins in production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://test-login-frontend-omega.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
