@@ -1,4 +1,4 @@
-#!/Users/sangho/Documents/Projects/6_login/backend/venv/bin/python3
+#!/Users/sangho/Documents/Projects/6_login/backend/venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,3 +1,5 @@
+import os
+import psycopg2
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -21,9 +23,10 @@ class User(BaseModel):
 
 # Create or connect to SQLite database
 def get_db():
-    conn = sqlite3.connect("users.db")
-    conn.execute("CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT)")
-    return conn
+    return psycopg2.connect(os.getenv("DATABASE_URL"))
+    # conn = sqlite3.connect("users.db")
+    # conn.execute("CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT)")
+    # return conn
 
 @app.get("/")
 async def root():
