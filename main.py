@@ -3,7 +3,7 @@ import psycopg2
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import sqlite3
+# import sqlite3
 
 app = FastAPI()
 
@@ -36,12 +36,14 @@ async def root():
 @app.post("/signup")
 async def signup(user: User):
     conn = get_db()
+    cursor = conn.cursor()
     try:
-        conn.execute("INSERT INTO users (email, password) VALUES (?, ?)", (user.email, user.password))
+        cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s)", (user.email, user.password))
         conn.commit()
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         raise HTTPException(status_code=400, detail="User already exists")
     finally:
+        cursor.close()
         conn.close()
     return {"message": "Signup successful"}
 
@@ -50,8 +52,10 @@ async def signup(user: User):
 async def login(user: User):
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (user.email, user.password))
+    cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s", (user.email, user.password))
+
     result = cursor.fetchone()
+    cursor.close()
     conn.close()
     if result:
         return {"message": "Login successful"}
